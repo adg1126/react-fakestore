@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSelector } from 'reselect';
 
 const initialState = {
   status: 'idle', // idle | loading | succeeded | failed
@@ -40,7 +41,22 @@ export const productsSlice = createSlice({
   },
 });
 
-export const selectProductsArr = (state) => state.productsArr,
-  selectProductsArrStatus = (state) => state.status;
+const selectProducts = (state) => state.products;
+
+export const selectProductsArr = createSelector(
+    [selectProducts],
+    (products) => products.productsArr
+  ),
+  selectProductsArrStatus = createSelector(
+    [selectProducts],
+    (products) => products.status
+  ),
+  selectProductCategoriesArr = createSelector(
+    [selectProductsArr],
+    (productsArr) =>
+      productsArr.length
+        ? [...new Set(productsArr.map((p) => p.category.name))]
+        : []
+  );
 
 export default productsSlice.reducer;
