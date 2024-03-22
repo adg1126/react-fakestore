@@ -76,7 +76,8 @@ export default function Appbar({ children }) {
         categoriesArr={categoriesArr}
       />
 
-      <div className='mx-auto max-w-screen-md py-12'>{children}</div>
+      {/* <div className='mx-auto max-w-screen-md py-12'>{children}</div> */}
+      {children}
     </div>
   );
 }
