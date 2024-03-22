@@ -3,13 +3,40 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   selectProductsArr,
   selectProductCategoriesArr,
+  setFilterOptions,
+  selectProductsFilterOptions,
 } from '../redux/productsSlice';
+import { useEffect, useState } from 'react';
+
+const sortOptionsArr = ['Default', 'Price Low to High', 'Price High to Low'];
 
 export default function Filter() {
   const productsArr = useSelector(selectProductsArr),
-    productCategoriesArr = useSelector(selectProductCategoriesArr);
+    productCategoriesArr = useSelector(selectProductCategoriesArr),
+    filterOption = useSelector(selectProductsFilterOptions);
 
-  console.log(productsArr);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log(filterOption);
+  }, [filterOption]);
+
+  const handleSetMinPrice = (e) => {
+    dispatch(setFilterOptions({ option: 'minPrice', newVal: e.target.value }));
+  };
+
+  const handleSetMaxPrice = (e) => {
+    dispatch(setFilterOptions({ option: 'maxPrice', newVal: e.target.value }));
+  };
+
+  const handleSetCategory = (category) => {
+    dispatch(setFilterOptions({ option: 'category', newVal: category }));
+  };
+
+  const handleSetSortBy = (sort) => {
+    dispatch(setFilterOptions({ option: 'sort', newVal: sort }));
+  };
+
   return (
     productsArr.length && (
       <section className='mt-8 flex flex-col items-center gap-y-8'>
@@ -20,48 +47,62 @@ export default function Filter() {
               {productsArr.length} products
             </Typography>
           </div>
-          <div className='flex flex-col'>
-            <Typography variant='h6'>Filter by price</Typography>
-            <div className='flex flex-row gap-x-4'>
-              <Input
-                className='w-full'
-                variant='standard'
-                label='Min. amount'
-                placeholder='$5'
-              />
-              <Input
-                className='w-full'
-                variant='standard'
-                label='Max. amount'
-                placeholder='$50'
-              />
+          <div className='flex flex-col gap-y-2'>
+            <Typography variant='h6'>Filter by</Typography>
+            <div className='flex flex-row gap-x-12'>
+              <div className='flex flex-row gap-x-6'>
+                <Input
+                  type='number'
+                  onChange={handleSetMinPrice}
+                  className='w-full'
+                  variant='standard'
+                  label='Min. amount'
+                  placeholder='$1'
+                />
+                <Input
+                  onChange={handleSetMaxPrice}
+                  type='number'
+                  className='w-full'
+                  variant='standard'
+                  label='Max. amount'
+                  placeholder='$1000'
+                />
+              </div>
+              <div>
+                <Select
+                  variant='standard'
+                  label='Category'
+                  onChange={handleSetCategory}
+                >
+                  {productCategoriesArr?.length &&
+                    productCategoriesArr.map((p, i) => (
+                      <Option
+                        key={i}
+                        value={p}
+                      >
+                        {p}
+                      </Option>
+                    ))}
+                </Select>
+              </div>
             </div>
           </div>
-          <div>
-            <Typography variant='h6'>Filter by category</Typography>
-            <Select
-              variant='standard'
-              label='Category'
-            >
-              <Option>Material Tailwind HTML</Option>
-              <Option>Material Tailwind React</Option>
-              <Option>Material Tailwind Vue</Option>
-              <Option>Material Tailwind Angular</Option>
-              <Option>Material Tailwind Svelte</Option>
-            </Select>
-          </div>
-          <div>
+          <div className='flex flex-col gap-y-2'>
             <Typography variant='h6'>Sort by</Typography>
             <div>
               <Select
                 variant='standard'
                 label='Default'
+                onChange={handleSetSortBy}
               >
-                <Option>Material Tailwind HTML</Option>
-                <Option>Material Tailwind React</Option>
-                <Option>Material Tailwind Vue</Option>
-                <Option>Material Tailwind Angular</Option>
-                <Option>Material Tailwind Svelte</Option>
+                {sortOptionsArr.map((s, i) => (
+                  <Option
+                    key={i}
+                    value={s}
+                  >
+                    {s}
+                  </Option>
+                ))}
               </Select>
             </div>
           </div>

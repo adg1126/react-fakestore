@@ -5,6 +5,11 @@ const initialState = {
   status: 'idle', // idle | loading | succeeded | failed
   errMessage: '',
   productsArr: [],
+  filterOptions: {
+    price: { min: 0, max: 0 },
+    category: '',
+    sortBy: '',
+  },
 };
 
 const PRODUCTS_URL = 'https://api.escuelajs.co/api/v1/products';
@@ -24,7 +29,21 @@ export const fetchProducts = createAsyncThunk(
 export const productsSlice = createSlice({
   name: 'products',
   initialState,
-  reducers: {},
+  reducers: {
+    setFilterOptions(state, action) {
+      const { option, newVal } = action.payload;
+
+      option === 'minPrice'
+        ? (state.filterOptions.price.min = newVal)
+        : option === 'maxPrice'
+        ? (state.filterOptions.price.max = newVal)
+        : option === 'category'
+        ? (state.filterOptions.category = newVal)
+        : option === 'sort'
+        ? (state.filterOptions.sort = newVal)
+        : state;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProducts.pending, (state) => {
@@ -57,6 +76,12 @@ export const selectProductsArr = createSelector(
       productsArr.length
         ? [...new Set(productsArr.map((p) => p.category.name))]
         : []
+  ),
+  selectProductsFilterOptions = createSelector(
+    [selectProducts],
+    (products) => products.filterOptions
   );
+
+export const { setFilterOptions } = productsSlice.actions;
 
 export default productsSlice.reducer;
