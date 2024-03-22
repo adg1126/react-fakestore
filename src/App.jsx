@@ -7,6 +7,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import Appbar from './components/Appbar/Appbar';
 import Card from './components/Card';
+import Filter from './components/Filter';
 
 function App() {
   const dispatch = useDispatch();
@@ -22,13 +23,14 @@ function App() {
   return (
     <main className='w-full'>
       <Appbar>
-        {productsArr.length &&
+        {/* {productsArr.length &&
           productsArr.map((p, i) => (
             <Card
               key={i}
               {...p}
             />
-          ))}
+          ))} */}
+        <Filter />
       </Appbar>
     </main>
   );
