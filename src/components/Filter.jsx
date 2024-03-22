@@ -4,22 +4,16 @@ import {
   selectProductsArr,
   selectProductCategoriesArr,
   setFilterOptions,
-  selectProductsFilterOptions,
 } from '../redux/productsSlice';
-import { useEffect, useState } from 'react';
+import Products from './Products';
 
 const sortOptionsArr = ['Default', 'Price Low to High', 'Price High to Low'];
 
 export default function Filter() {
   const productsArr = useSelector(selectProductsArr),
-    productCategoriesArr = useSelector(selectProductCategoriesArr),
-    filterOption = useSelector(selectProductsFilterOptions);
+    productCategoriesArr = useSelector(selectProductCategoriesArr);
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    console.log(filterOption);
-  }, [filterOption]);
 
   const handleSetMinPrice = (e) => {
     dispatch(setFilterOptions({ option: 'minPrice', newVal: e.target.value }));
@@ -107,7 +101,7 @@ export default function Filter() {
             </div>
           </div>
         </div>
-        <div>catalog</div>
+        <Products productsArr={productsArr} />
       </section>
     )
   );
