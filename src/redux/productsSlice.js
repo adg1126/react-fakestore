@@ -44,6 +44,13 @@ export const productsSlice = createSlice({
         ? (state.filterOptions.sortBy = newVal)
         : state;
     },
+    resetFilterOption(state) {
+      state.filterOptions.price.min = 1;
+      state.filterOptions.price.max = 1000;
+      state.filterOptions.category = '';
+      state.filterOptions.sortBy = 'Default';
+      state.filteredProductsArr = state.productsArr;
+    },
     fetchProductsArrByPrice(state) {
       let {
         filterOptions: { price },
@@ -163,6 +170,7 @@ export const selectProductsArr = createSelector(
 
 export const {
   setFilterOptions,
+  resetFilterOption,
   fetchProductsArrByPrice,
   fetchProductsArrByCategory,
   fetchProductsArrBySort,

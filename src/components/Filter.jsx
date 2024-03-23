@@ -9,7 +9,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   selectProductsArr,
   selectProductCategoriesArr,
+  selectProductsFilterOptions,
   setFilterOptions,
+  resetFilterOption,
   fetchProductsArrByPrice,
   fetchProductsArrByCategory,
   fetchProductsArrBySort,
@@ -20,7 +22,14 @@ const sortOptionsArr = ['Default', 'Price Low to High', 'Price High to Low'];
 
 export default function Filter() {
   const productsArr = useSelector(selectProductsArr),
-    productCategoriesArr = useSelector(selectProductCategoriesArr);
+    productCategoriesArr = useSelector(selectProductCategoriesArr),
+    filterOption = useSelector(selectProductsFilterOptions);
+
+  const {
+    price: { min, max },
+    category,
+    sortBy,
+  } = filterOption;
 
   const dispatch = useDispatch();
 
@@ -42,6 +51,10 @@ export default function Filter() {
   const handleSetSortBy = (sortBy) => {
     dispatch(setFilterOptions({ option: 'sortBy', newVal: sortBy }));
     dispatch(fetchProductsArrBySort());
+  };
+
+  const handleResetFilterOption = () => {
+    dispatch(resetFilterOption());
   };
 
   return (
@@ -66,6 +79,7 @@ export default function Filter() {
                   variant='standard'
                   label='Min. amount'
                   placeholder='$1'
+                  value={min}
                 />
                 <Input
                   onChange={handleSetMaxPrice}
@@ -74,6 +88,7 @@ export default function Filter() {
                   variant='standard'
                   label='Max. amount'
                   placeholder='$1000'
+                  value={max}
                 />
               </div>
               <div>
@@ -81,6 +96,7 @@ export default function Filter() {
                   variant='standard'
                   label='Category'
                   onChange={handleSetCategory}
+                  value={category}
                 >
                   {productCategoriesArr?.length &&
                     productCategoriesArr.map((p, i) => (
@@ -102,6 +118,7 @@ export default function Filter() {
                 variant='standard'
                 label='Default'
                 onChange={handleSetSortBy}
+                value={sortBy}
               >
                 {sortOptionsArr.map((s, i) => (
                   <Option
@@ -118,6 +135,7 @@ export default function Filter() {
             <Button
               size='md'
               variant='outlined'
+              onClick={handleResetFilterOption}
             >
               reset
             </Button>
