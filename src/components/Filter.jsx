@@ -1,11 +1,20 @@
-import { Typography, Select, Option, Input } from '@material-tailwind/react';
+import {
+  Typography,
+  Select,
+  Option,
+  Input,
+  Button,
+} from '@material-tailwind/react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectProductsArr,
   selectProductCategoriesArr,
   setFilterOptions,
+  fetchProductsArrByPrice,
+  fetchProductsArrByCategory,
+  fetchProductsArrBySort,
 } from '../redux/productsSlice';
-import Products from './Products';
+import ProductsList from './ProductsList';
 
 const sortOptionsArr = ['Default', 'Price Low to High', 'Price High to Low'];
 
@@ -17,18 +26,22 @@ export default function Filter() {
 
   const handleSetMinPrice = (e) => {
     dispatch(setFilterOptions({ option: 'minPrice', newVal: e.target.value }));
+    dispatch(fetchProductsArrByPrice());
   };
 
   const handleSetMaxPrice = (e) => {
     dispatch(setFilterOptions({ option: 'maxPrice', newVal: e.target.value }));
+    dispatch(fetchProductsArrByPrice());
   };
 
   const handleSetCategory = (category) => {
     dispatch(setFilterOptions({ option: 'category', newVal: category }));
+    dispatch(fetchProductsArrByCategory());
   };
 
-  const handleSetSortBy = (sort) => {
-    dispatch(setFilterOptions({ option: 'sort', newVal: sort }));
+  const handleSetSortBy = (sortBy) => {
+    dispatch(setFilterOptions({ option: 'sortBy', newVal: sortBy }));
+    dispatch(fetchProductsArrBySort());
   };
 
   return (
@@ -100,8 +113,16 @@ export default function Filter() {
               </Select>
             </div>
           </div>
+          <div className='flex flex-col justify-center'>
+            <Button
+              size='md'
+              variant='outlined'
+            >
+              reset
+            </Button>
+          </div>
         </div>
-        <Products productsArr={productsArr} />
+        <ProductsList />
       </section>
     )
   );

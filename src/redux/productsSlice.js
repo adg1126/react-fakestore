@@ -6,10 +6,11 @@ const initialState = {
   errMessage: '',
   productsArr: [],
   filterOptions: {
-    price: { min: 0, max: 0 },
+    price: { min: 1, max: 1000 },
     category: '',
-    sortBy: '',
+    sortBy: 'Default',
   },
+  filteredProductsArr: [],
 };
 
 const PRODUCTS_URL = 'https://api.escuelajs.co/api/v1/products';
@@ -39,9 +40,83 @@ export const productsSlice = createSlice({
         ? (state.filterOptions.price.max = newVal)
         : option === 'category'
         ? (state.filterOptions.category = newVal)
-        : option === 'sort'
-        ? (state.filterOptions.sort = newVal)
+        : option === 'sortBy'
+        ? (state.filterOptions.sortBy = newVal)
         : state;
+    },
+    fetchProductsArrByPrice(state) {
+      let {
+        filterOptions: { price },
+        productsArr,
+      } = state;
+
+      if (state.filteredProductsArr?.length) {
+        let toFilterArr = state.filteredProductsArr;
+
+        state.filteredProductsArr = toFilterArr.filter((product) => {
+          if (price.min && product.price < price.min) return false;
+          if (price.max && product.price > price.max) return false;
+          return true;
+        });
+      } else {
+        state.filteredProductsArr = productsArr.filter((product) => {
+          if (price.min && product.price < price.min) return false;
+          if (price.max && product.price > price.max) return false;
+          return true;
+        });
+      }
+    },
+    fetchProductsArrByCategory(state) {
+      let {
+        filterOptions: { category },
+        productsArr,
+      } = state;
+
+      if (state.filteredProductsArr?.length) {
+        let toFilterArr = state.filteredProductsArr;
+
+        state.filteredProductsArr = toFilterArr.filter((product) => {
+          if (category && product.category.name !== category) return false;
+          return true;
+        });
+      } else {
+        state.filteredProductsArr = productsArr.filter((product) => {
+          if (category && product.category.name !== category) return false;
+          return true;
+        });
+      }
+    },
+    fetchProductsArrBySort(state) {
+      let {
+        filterOptions: { sortBy },
+        productsArr,
+      } = state;
+
+      if (state.filteredProductsArr?.length) {
+        let toFilterArr = state.filteredProductsArr;
+
+        if (sortBy === 'Default') state.filteredProductsArr = toFilterArr;
+        else if (sortBy === 'Price Low to High') {
+          state.filteredProductsArr = toFilterArr.sort(
+            (a, b) => parseInt(a.price) - parseInt(b.price)
+          );
+        } else if (sortBy === 'Price High to Low') {
+          state.filteredProductsArr = toFilterArr.sort(
+            (a, b) => parseInt(b.price) - parseInt(a.price)
+          );
+        }
+      } else {
+        if (sortBy === 'Default') state.filteredProductsArr = productsArr;
+        else if (sortBy === 'Price Low to High') {
+          state.filteredProductsArr = productsArr.sort(
+            (a, b) => parseInt(a.price) - parseInt(b.price)
+          );
+        } else if (sortBy === 'Price High to Low') {
+          state.filteredProductsArr = productsArr.sort(
+            (a, b) => parseInt(b.price) - parseInt(a.price)
+          );
+        }
+      }
     },
   },
   extraReducers: (builder) => {
@@ -80,8 +155,17 @@ export const selectProductsArr = createSelector(
   selectProductsFilterOptions = createSelector(
     [selectProducts],
     (products) => products.filterOptions
+  ),
+  selectFilteredProductsArr = createSelector(
+    [selectProducts],
+    (products) => products.filteredProductsArr
   );
 
-export const { setFilterOptions } = productsSlice.actions;
+export const {
+  setFilterOptions,
+  fetchProductsArrByPrice,
+  fetchProductsArrByCategory,
+  fetchProductsArrBySort,
+} = productsSlice.actions;
 
 export default productsSlice.reducer;
