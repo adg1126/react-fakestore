@@ -47,7 +47,8 @@ export default function Filter() {
   return (
     productsArr.length && (
       <section className='mt-8 flex flex-col items-center gap-y-8'>
-        <div className='w-5/6 h-1/6 flex flex-row gap-x-12 justify-center'>
+        {/* Filter */}
+        <div className='w-[90vw] lg:w-5/6 h-1/6 flex flex-wrap gap-x-12 gap-y-6 justify-start flex-col lg:flex-row lg:justify-center lg:flex-nowrap'>
           <div className='flex flex-col'>
             <Typography variant='h5'>FILTER YOUR SEARCH</Typography>
             <Typography variant='paragraph'>
@@ -56,8 +57,8 @@ export default function Filter() {
           </div>
           <div className='flex flex-col gap-y-2'>
             <Typography variant='h6'>Filter by</Typography>
-            <div className='flex flex-row gap-x-12'>
-              <div className='flex flex-row gap-x-6'>
+            <div className='flex flex-col md:flex-row gap-x-12'>
+              <div className='flex flex-col md:flex-row gap-x-6'>
                 <Input
                   type='number'
                   onChange={handleSetMinPrice}
@@ -122,6 +123,8 @@ export default function Filter() {
             </Button>
           </div>
         </div>
+
+        {/* Products List */}
         <ProductsList />
       </section>
     )
